@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { Config } from './config/config.interface';
+import { Configs } from './config/config.interface';
 
 @Module({
   imports: [
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService<Config, true>) => ({
+      useFactory: async (configService: ConfigService<Configs, true>) => ({
         global: true,
         secret: configService.get('jwt.secret', { infer: true }),
         signOptions: {

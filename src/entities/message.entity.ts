@@ -1,0 +1,33 @@
+import {
+  Entity,
+  ManyToOne,
+  Opt,
+  Property,
+  Ref,
+  Rel,
+} from '@mikro-orm/postgresql';
+import { BaseEnity } from 'common/databases';
+import { Conversation, User } from './index';
+
+@Entity()
+export class Message extends BaseEnity {
+  @Property()
+  body!: string;
+
+  @ManyToOne({ index: true })
+  sender: Rel<Ref<User>>;
+
+  @ManyToOne({ index: true })
+  conversation: Rel<Ref<Conversation>>;
+
+  @Property()
+  isRead: boolean & Opt = false;
+
+  @Property()
+  readAt?: Date;
+
+  constructor(partial?: Partial<Message>) {
+    super();
+    Object.assign(this, partial);
+  }
+}

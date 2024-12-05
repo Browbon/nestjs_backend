@@ -1,7 +1,6 @@
-export const VERSION_VALIDATION_MESSAGE =
-  'Version must start with "v" followed by a number.';
+export const VERSION_VALIDATION_MESSAGE = `Version must start with "v" followed by a number.`;
 
-export const APP_ENVIRONMENTS = [
+export const APP_ENVIRONMENTS: string[] = [
   'dev',
   'development',
   'test',
@@ -9,3 +8,5 @@ export const APP_ENVIRONMENTS = [
   'prod',
   'production',
 ];
+
+export const API_UNAUTHORIZED_RESPONSE: string = 'No token is request';

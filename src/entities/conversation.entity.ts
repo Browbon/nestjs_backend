@@ -1,0 +1,28 @@
+import {
+  Collection,
+  Entity,
+  ManyToMany,
+  OneToMany,
+  Property,
+} from '@mikro-orm/postgresql';
+import { BaseEnity } from 'common/databases';
+import { Message, User } from './index';
+
+@Entity()
+export class Conversation extends BaseEnity {
+  @Property({ index: true })
+  chatName!: string;
+
+  @ManyToMany(() => User, (user) => user.conversations, { index: true })
+  users = new Collection<User>(this);
+
+  @OneToMany(() => Message, (message) => message.conversation, {
+    orphanRemoval: true,
+  })
+  messages = new Collection<Message>(this);
+
+  constructor(partial?: Partial<Conversation>) {
+    super();
+    Object.assign(this, partial);
+  }
+}
