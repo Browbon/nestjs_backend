@@ -9,4 +9,4 @@ export const APP_ENVIRONMENTS: string[] = [
   'production',
 ];
 
-export const API_UNAUTHORIZED_RESPONSE: string = 'No token is request';
+export const API_UNAUTHORIZED_RESPONSE: string = 'No token in request';
