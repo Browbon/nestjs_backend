@@ -37,4 +37,12 @@ export const HelperService = {
       .replaceAll(/[^\d a-z-]/g, '') // keep digits, space, a-z and hyphens
       .replaceAll(/\s+/g, '-'); // replace white spaces with hyphens
   },
+
+  pick<T, K extends keyof T>(object: T, keys: K[]): Pick<T, K> {
+    const returnValue: Pick<T, K> = {} as Pick<T, K>;
+
+    for (const key of keys) returnValue[key] = object[key];
+
+    return returnValue;
+  },
 };

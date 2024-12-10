@@ -3,7 +3,7 @@ import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
 import { HelperService } from '../helpers';
 
 @Entity({ abstract: true })
-export abstract class BaseEnity {
+export abstract class BaseEntity {
   @PrimaryKey({ hidden: true, index: true })
   id!: number;
 

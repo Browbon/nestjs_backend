@@ -5,3 +5,4 @@ export * from './message.entity';
 export * from './comment.enitty';
 export * from './tag.entity';
 export * from './Category.entity';
+export * from './refresh-token.entity';

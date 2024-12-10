@@ -15,7 +15,7 @@ import {
   EventArgs,
 } from '@mikro-orm/postgresql';
 import { Role } from 'common/@types/enums';
-import { BaseEnity } from 'common/databases';
+import { BaseEntity } from 'common/databases';
 import { BaseRepository } from 'common/databases/base.repository';
 import { Conversation, Post } from './index';
 import { HelperService } from 'common/helpers';
@@ -33,7 +33,7 @@ export class Social {
 }
 
 @Entity({ repository: () => BaseRepository<User> })
-export class User extends BaseEnity {
+export class User extends BaseEntity {
   @Property()
   firstName!: string;
 
