@@ -4,7 +4,9 @@ import { TokenService } from 'modules/token';
 import { Body, Get, Patch, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import {
+  ChangePasswordDto,
   MagicLinkLogin,
+  OtpVerifyDto,
   ResetPasswordDto,
   SendOtpDto,
   UserLoginDto,
@@ -16,6 +18,7 @@ import { NestifyRequest, NestifyResponse } from 'common/@types/typings/global';
 import { MagicLoginStrategy } from './strategies';
 import { AuthGuard } from '@nestjs/passport';
 import { LoggedInUser } from 'common/decorators/user.decorator';
+import { OauthResponse } from 'common/@types/interfaces';
 
 @GenericController('auth', false)
 export class AuthController {
@@ -76,5 +79,62 @@ export class AuthController {
         );
       }),
     );
+  }
+
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  googleAuth(@Req() _request: Request) {
+    // the google auth redirect will be handled by passport
+  }
+
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  googleAuthRedirect(
+    @LoggedInUser()
+    user: OauthResponse,
+    @Res() response: NestifyResponse,
+  ) {
+    return this.authService.OauthHandler({ response, user });
+  }
+
+  @Get('facebook')
+  @UseGuards(AuthGuard('facebook'))
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  facebookAuth(@Req() _request: Request) {
+    // the facebook auth redirect will be handled by passport
+  }
+
+  @Get('facebook/callback')
+  @UseGuards(AuthGuard('facebook'))
+  facebookAuthRedirect(
+    @LoggedInUser()
+    user: OauthResponse,
+    @Res() response: NestifyResponse,
+  ) {
+    return this.authService.OauthHandler({ response, user });
+  }
+
+  @Post('verify-otp')
+  @SwaggerResponse({
+    operation: 'Verify otp',
+    notFound: "Otp doesn't exist.",
+    badRequest: 'Otp is expired.',
+  })
+  verifyOtp(@Body() dto: OtpVerifyDto): Observable<User> {
+    return this.authService.verifyOtp(dto);
+  }
+
+  @Auth()
+  @Post('change-password')
+  @SwaggerResponse({
+    operation: 'Change password',
+    badRequest: 'Username and password provided does not match.',
+  })
+  changePassword(
+    @Body() dto: ChangePasswordDto,
+    @LoggedInUser() user: User,
+  ): Observable<User> {
+    return this.authService.changePassword(dto, user);
   }
 }

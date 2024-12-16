@@ -10,7 +10,13 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { BaseRepository } from 'common/databases/base.repository';
 import { OtpLog, Protocol, User } from 'entities';
-import { ResetPasswordDto, SendOtpDto, UserLoginDto } from './dtos';
+import {
+  ChangePasswordDto,
+  OtpVerifyDto,
+  ResetPasswordDto,
+  SendOtpDto,
+  UserLoginDto,
+} from './dtos';
 import {
   from,
   map,
@@ -29,7 +35,9 @@ import { PostgreSqlDriver } from '@mikro-orm/postgresql';
 import { init } from '@paralleldrive/cuid2';
 import { MailerService } from 'lib/mailer';
 import { EmailSubject, EmailTemplate } from 'common/@types/enums';
-import { Configs } from 'common/@types/typings/global';
+import { Configs, NestifyResponse } from 'common/@types/typings/global';
+import { OauthResponse } from 'common/@types/interfaces';
+import { isAfter } from 'date-fns';
 
 @Injectable()
 export class AuthService {
@@ -268,6 +276,128 @@ export class AuthService {
                 message: 'Otp sent successfully!!!',
               })),
             );
+          }),
+        );
+      }),
+    );
+  }
+
+  /**
+   * The `OauthHandler` function handles the OAuth login process and redirects the user to the client URL
+   * with the access token.
+   * @returns a redirect response to a client url with an access token as query parameter
+   */
+  OauthHandler({
+    response,
+    user,
+  }: {
+    response: NestifyResponse;
+    user: OauthResponse;
+  }) {
+    return this.login({ email: user.email }, false).pipe(
+      map((data) => {
+        // client url
+        return response.redirect(
+          `${process.env.API_URL}/${process.env.APP_PORT}/v1/auth/oauth/login?token=${data.accessToken}`,
+        );
+      }),
+    );
+  }
+
+  verifyOtp(otpDto: OtpVerifyDto): Observable<User> {
+    const { otpCode } = otpDto;
+
+    return from(
+      this.otpRepository.findOne(
+        {
+          otpCode,
+        },
+        {
+          populate: ['user'],
+        },
+      ),
+    ).pipe(
+      switchMap((codeDetails) => {
+        if (!codeDetails) {
+          return throwError(
+            () =>
+              new NotFoundException(
+                translate(itemDoesNotExistKey, {
+                  args: { item: 'Otp' },
+                }),
+              ),
+          );
+        }
+
+        const isExpired = isAfter(new Date(), new Date(codeDetails.expiresIn));
+
+        if (isExpired) {
+          return throwError(
+            () =>
+              new BadRequestException(
+                translate('exception.itemExpired', {
+                  args: { item: 'Otp' },
+                }),
+              ),
+          );
+        }
+        this.otpRepository.assign(codeDetails, {
+          isUsed: true,
+        });
+
+        return from(
+          this.em.transactional(async (em) => {
+            await Promise.allSettled([
+              em.nativeUpdate(
+                User,
+                {
+                  id: codeDetails.user.id,
+                },
+                { isVerified: true },
+              ),
+              em.flush(),
+            ]);
+          }),
+        ).pipe(map(() => codeDetails.user.getEntity()));
+      }),
+    );
+  }
+
+  changePassword(dto: ChangePasswordDto, user: User): Observable<User> {
+    const { password, oldPassword } = dto;
+
+    return from(
+      this.userRepository.findOne({
+        id: user.id,
+      }),
+    ).pipe(
+      switchMap((userDetails) => {
+        if (!userDetails) {
+          return throwError(
+            () =>
+              new NotFoundException(
+                translate(itemDoesNotExistKey, {
+                  args: { item: 'Account' },
+                }),
+              ),
+          );
+        }
+
+        return HelperService.verifyHash(userDetails.password, oldPassword).pipe(
+          switchMap((isValid) => {
+            if (!isValid) {
+              return throwError(
+                () =>
+                  new BadRequestException(
+                    translate('exception.invalidCredentials'),
+                  ),
+              );
+            }
+            this.userRepository.assign(userDetails, {
+              password,
+            });
+
+            return from(this.em.flush()).pipe(map(() => userDetails));
           }),
         );
       }),

@@ -19,7 +19,7 @@ export class ResetPasswordDto {
   confirmPassword!: string;
 }
 
-export class ChangPasswordDto extends PickType(ResetPasswordDto, [
+export class ChangePasswordDto extends PickType(ResetPasswordDto, [
   'password',
   'confirmPassword',
 ] as const) {
