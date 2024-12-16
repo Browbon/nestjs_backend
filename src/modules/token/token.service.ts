@@ -209,4 +209,18 @@ export class TokenService {
       );
     }
   }
+
+  createAccessTokenFromRefreshToken(
+    refresh: string,
+  ): Observable<{ token: string; user: User }> {
+    return this.resolveRefreshToken(refresh).pipe(
+      switchMap(({ user }) => {
+        return this.generateAccessToken(user).pipe(
+          map((token) => {
+            return { token, user };
+          }),
+        );
+      }),
+    );
+  }
 }

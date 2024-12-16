@@ -1,12 +1,24 @@
 import { Auth, GenericController, SwaggerResponse } from 'common/decorators';
 import { AuthService } from './auth.service';
 import { TokenService } from 'modules/token';
-import { Body, Get, Patch, Post, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  DefaultValuePipe,
+  Get,
+  ParseBoolPipe,
+  Patch,
+  Post,
+  Query,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import {
   ChangePasswordDto,
   MagicLinkLogin,
   OtpVerifyDto,
+  RefreshTokenDto,
   ResetPasswordDto,
   SendOtpDto,
   UserLoginDto,
@@ -136,5 +148,28 @@ export class AuthController {
     @LoggedInUser() user: User,
   ): Observable<User> {
     return this.authService.changePassword(dto, user);
+  }
+
+  @ApiOperation({ summary: 'Refresh token' })
+  @Post('token/refresh')
+  createRefreshToken(@Body() body: RefreshTokenDto): Observable<any> {
+    return this.tokenService
+      .createAccessTokenFromRefreshToken(body.refreshToken)
+      .pipe(map((token) => ({ token })));
+  }
+
+  @Auth()
+  @ApiOperation({ summary: 'Logout user' })
+  @Post('logout')
+  logout(
+    @LoggedInUser() user: User,
+    @Query('fromAll', new DefaultValuePipe(false), ParseBoolPipe)
+    fromAll?: boolean,
+    @Body()
+    refreshToken?: RefreshTokenDto,
+  ): Observable<User> {
+    return fromAll
+      ? this.authService.logoutFromAll(user)
+      : this.authService.logout(user, refreshToken!.refreshToken);
   }
 }
