@@ -2,37 +2,39 @@ import { InjectRepository } from '@mikro-orm/nestjs';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-import { randAnimal, randCatchPhrase, randFirstName } from '@ngneat/falso';
-import { OauthResponse } from 'common/@types/interfaces';
 import { Configs } from 'common/@types/typings/global';
 import { BaseRepository } from 'common/databases';
-import { HelperService } from 'common/helpers';
 import { User } from 'entities';
-import { Profile, VerifyCallback } from 'passport-google-oauth20';
 import { Strategy } from 'passport-jwt';
+import { Profile } from 'passport-facebook';
+import { VerifyCallback } from 'passport-google-oauth20';
+import { OauthResponse } from 'common/@types/interfaces';
+import { randAnimal, randCatchPhrase, randFirstName } from '@ngneat/falso';
+import { HelperService } from 'common/helpers';
 
 @Injectable()
-export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
+export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
   /**
-   * It's a PassportStrategy that uses the GoogleStrategy and the Google OAuth2.0 API to authenticate users
+   * It's a PassportStrategy that uses the FacebookStrategy and the Google OAuth2.0 API to authenticate users
    * Create a new project at
-   * https://console.cloud.google.com/apis/
+   * https://developers.facebook.com
    *
    * The callback url should match whats specified in the callbackURL section
    */
 
   constructor(
+    public readonly configService: ConfigService<Configs, true>,
     @InjectRepository(User)
     private readonly userRepo: BaseRepository<User>,
-    public readonly configService: ConfigService<Configs, true>,
   ) {
     super({
-      clientID: configService.get('googleAuth.clientId', { infer: true }),
-      clientSecret: configService.get('googleAuth.secret', { infer: true }),
-      callbackURL: configService.get('googleAuth.callbackUrl', {
+      clientID: configService.get('facebookOauth.clientId', { infer: true }),
+      clientSecret: configService.get('facebookOauth.secret', { infer: true }),
+      callbackURL: configService.get('facebookOauth.callbackUrl', {
         infer: true,
       }),
-      scope: ['email', 'profile'],
+      scope: 'email',
+      profileFields: ['emails', 'name'],
     });
   }
 
@@ -42,14 +44,13 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     profile: Profile,
     done: VerifyCallback,
   ): Promise<any> {
-    const { name, emails, photos, username } = profile;
+    const { name, emails, username, photos } = profile;
     const user: OauthResponse = {
       email: emails![0]!.value,
       firstName: name?.givenName ?? randFirstName(),
       lastName: name?.familyName ?? randAnimal(),
       accessToken,
     };
-
     // Check if the user already exists in your database
     const existingUser = await this.userRepo.findOne({
       email: emails![0]!.value,
