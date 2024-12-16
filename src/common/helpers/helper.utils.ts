@@ -10,6 +10,11 @@ const argon2Options: ArgonOptions & { raw?: false } = {
   hashLength: 50,
   timeCost: 4,
 };
+interface IRandomStringOptions {
+  length: number;
+  symbols?: boolean;
+  numbers?: boolean;
+}
 
 export const HelperService = {
   // The 'isProd' function checks the NODE_ENV whether is in the production environment, return 'true' if the NODE_ENV is 'prod' or 'production'
@@ -84,5 +89,69 @@ export const HelperService = {
     return string_
       ? string_.charAt(0).toUpperCase() + string_.slice(1).toLowerCase()
       : '';
+  },
+
+  randomAvatar(gender?: 'male' | 'female'): string {
+    const baseUrl = 'https://api.dicebear.com/7.x/adventurer/svg?seed=';
+    // Female pet names
+    const femaleNames = [
+      'Princess',
+      'Sophie',
+      'Lola',
+      'Abby',
+      'Callie',
+      'Sassy',
+      'Angel',
+      'Pepper',
+      'Cali',
+    ];
+
+    // Male pet names
+    const maleNames = [
+      'Snuggles',
+      'Toby',
+      'Scooter',
+      'Oreo',
+      'Socks',
+      'Chester',
+      'Midnight',
+      'Milo',
+      'Garfield',
+      'Tiger',
+    ];
+
+    if (gender && gender === 'male') {
+      // return a random male name
+      return `${baseUrl}${maleNames[Math.floor(Math.random() * maleNames.length)]}`;
+    }
+
+    return `${baseUrl}${femaleNames[Math.floor(Math.random() * femaleNames.length)]}`;
+  },
+
+  randomString(options: IRandomStringOptions): string {
+    const alpha = 'abcdefghijklmnopqrstuvwxyz';
+    const Alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const numbersList = '0123456789';
+    const symbolsList = '!@#$%^&*_-+=';
+
+    const characters: string[] = [alpha, Alpha];
+
+    if (options.numbers) characters.push(numbersList);
+
+    if (options.symbols) characters.push(symbolsList);
+
+    const password: string[] = [];
+
+    for (let index = 0; index < options.length; index++) {
+      const selectedCharacterIndex = Math.trunc(
+        Math.random() * characters.length,
+      );
+      const selectedCharacter = characters[selectedCharacterIndex];
+      const randomIndex = Math.trunc(Math.random() * selectedCharacter.length);
+
+      password.push(selectedCharacter.charAt(randomIndex));
+    }
+
+    return password.join('');
   },
 };

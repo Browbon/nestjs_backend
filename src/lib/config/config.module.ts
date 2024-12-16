@@ -8,6 +8,8 @@ import {
   app,
   appConfigValidationSchema,
   database,
+  facebookOauthConfigValidationSchema,
+  googleOauthConfigValidationSchema,
   jwt,
   jwtConfigValidationSchema,
 } from './configs';
@@ -24,6 +26,8 @@ import {
         ...appConfigValidationSchema,
         ...jwtConfigValidationSchema,
         ...databaseConfigValidationSchema,
+        ...googleOauthConfigValidationSchema,
+        ...facebookOauthConfigValidationSchema,
       }),
       validationOptions: {
         abortEarly: true,
