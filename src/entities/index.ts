@@ -6,3 +6,5 @@ export * from './comment.enitty';
 export * from './tag.entity';
 export * from './Category.entity';
 export * from './refresh-token.entity';
+export * from './otp-log.entity';
+export * from './protocol.entity';

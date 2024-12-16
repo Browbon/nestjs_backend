@@ -15,7 +15,7 @@ import {
   throwError,
 } from 'rxjs';
 import { HelperService } from 'common/helpers';
-import { JwtPayLoad } from 'common/@types/interfaces';
+import { JwtPayload } from 'common/@types/interfaces';
 import { translate } from 'lib/i18n';
 
 @Injectable()
@@ -126,9 +126,9 @@ export class TokenService {
    * @param token - The token need to be decoded
    * @returns The decoded jwt payload
    */
-  decodeRefreshToken(token: string): Observable<JwtPayLoad> {
+  decodeRefreshToken(token: string): Observable<JwtPayload> {
     return from(this.jwt.verifyAsync(token)).pipe(
-      map((payload: JwtPayLoad) => payload),
+      map((payload: JwtPayload) => payload),
       catchError((error) => {
         throw error instanceof TokenExpiredError
           ? new UnauthorizedException(
@@ -145,7 +145,7 @@ export class TokenService {
     );
   }
 
-  getUserFromRefreshTokenPayload(payload: JwtPayLoad): Observable<User> {
+  getUserFromRefreshTokenPayload(payload: JwtPayload): Observable<User> {
     const subId = payload.sub;
 
     if (!subId) {
@@ -169,7 +169,7 @@ export class TokenService {
    * @returns Observable<RefreshToken | null>
    */
   getStoredTokenFromRefreshTokenPayload(
-    payload: JwtPayLoad,
+    payload: JwtPayload,
   ): Observable<RefreshToken | null> {
     const tokenId = payload.jti;
 
@@ -185,5 +185,28 @@ export class TokenService {
     }
 
     return this.refreshTokenRepo.findTokenById(tokenId);
+  }
+
+  deleteUserRefreshToken(user: User): Observable<User> {
+    return this.refreshTokenRepo.deleteTokenForUser(user).pipe(
+      map(() => {
+        return user;
+      }),
+    );
+  }
+
+  deleteRefreshToken(user: User, payload: JwtPayload): Observable<User> {
+    const tokenId = payload.jti;
+
+    if (tokenId == null) {
+      return throwError(
+        () =>
+          new UnauthorizedException(
+            translate('exception.refreshToken', {
+              args: { error: 'malformed' },
+            }),
+          ),
+      );
+    }
   }
 }

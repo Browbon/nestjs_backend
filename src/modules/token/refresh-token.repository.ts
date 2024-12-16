@@ -54,7 +54,7 @@ export class RefreshTokenRepository {
    * @param user - The user object that we want to delete refresh token for
    * @returns A boolean value
    */
-  deleteTokenByUser(user: User): Observable<boolean> {
+  deleteTokenForUser(user: User): Observable<boolean> {
     return from(
       this.refreshTokenRepository.nativeUpdate({ user }, { isRevoked: true }),
     ).pipe(map(() => true));

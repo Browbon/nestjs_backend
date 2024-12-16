@@ -1,5 +1,6 @@
-import { Controller } from '@nestjs/common';
+import { applyDecorators, Controller } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Auth } from './auth.decorator';
 
 /**
  *
@@ -11,5 +12,6 @@ export function GenericController(name: string, secure: boolean = false) {
   const decsToApply: (ClassDecorator | MethodDecorator | PropertyDecorator)[] =
     [ApiTags(name), Controller(name)];
 
-  if (secure) decsToApply.push();
+  if (secure) decsToApply.push(Auth());
+  return applyDecorators(...decsToApply);
 }

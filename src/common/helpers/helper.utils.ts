@@ -1,7 +1,9 @@
-import { argon2id, hash } from 'argon2';
+import { argon2id, hash, verify } from 'argon2';
 import { format, fromZonedTime } from 'date-fns-tz';
 import * as process from 'node:process';
 import { Options as ArgonOptions } from 'argon2';
+import { from, Observable } from 'rxjs';
+import { User } from 'entities';
 
 const argon2Options: ArgonOptions & { raw?: false } = {
   type: argon2id,
@@ -44,5 +46,43 @@ export const HelperService = {
     for (const key of keys) returnValue[key] = object[key];
 
     return returnValue;
+  },
+
+  normalizeEmail(email: string): string {
+    const DOT_REG: RegExp = /\./g;
+    const [name, host] = email.split('@');
+    let [beforePlus] = name.split('+');
+    beforePlus = beforePlus.replaceAll(DOT_REG, '');
+    const result = `${beforePlus.toLowerCase()}@${host.toLowerCase()}`;
+    return result;
+  },
+
+  verifyHash(
+    userPassword: string,
+    passwordToConpare: string,
+  ): Observable<boolean> {
+    return from(verify(userPassword, passwordToConpare, argon2Options));
+  },
+
+  omit<T, K extends keyof T>(object: T, keys: K[]): Omit<T, K> {
+    const omitted = { ...object };
+    for (const key of keys) delete omitted[key];
+    return omitted;
+  },
+
+  buildPayloadResponse(user: User, accessToken: string, refreshToken?: string) {
+    return {
+      user: { ...HelperService.pick(user, ['id', 'idx']) },
+      accessToken,
+      ...(refreshToken !== null ? { refresh_token: refreshToken } : {}),
+    };
+  },
+
+  // If string exists, return the string with the first character capitalized and the the rest is lowercase string
+  // otherwise return the empty string
+  capitalize(string_: string): string {
+    return string_
+      ? string_.charAt(0).toUpperCase() + string_.slice(1).toLowerCase()
+      : '';
   },
 };

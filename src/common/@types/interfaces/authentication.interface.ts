@@ -1,4 +1,4 @@
-export interface JwtPayLoad {
+export interface JwtPayload {
   jti?: number;
   sub: number;
   iat: number;
