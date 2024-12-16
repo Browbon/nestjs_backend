@@ -1,0 +1,71 @@
+import { Injectable, Logger } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
+import Strategy from 'passport-magic-login';
+import { AuthService } from '../auth.service';
+import { MailerService } from 'lib/mailer';
+import { ConfigService } from '@nestjs/config';
+import { Configs } from 'common/@types/typings/global';
+import { EmailSubject, EmailTemplate } from 'common/@types/enums';
+import { Loaded } from '@mikro-orm/postgresql';
+import { User } from 'entities';
+
+interface MagicLoginPayload {
+  destination: string;
+  code: string;
+  iat: number;
+  exp: number;
+}
+
+@Injectable()
+export class MagicLoginStrategy extends PassportStrategy(
+  Strategy,
+  'magicLogin',
+) {
+  logger = new Logger(MagicLoginStrategy.name);
+
+  constructor(
+    private readonly authService: AuthService,
+    private readonly mailService: MailerService,
+    private readonly configService: ConfigService<Configs, true>,
+    config: ConfigService<Configs, true>,
+  ) {
+    super({
+      secret: config.get('jwt.secret', { infer: true }),
+      jwtOptions: {
+        expiresIn: config.get('jwt.magicLinkExpiry', { infer: true }),
+      },
+      algorithm: [config.get('jwt.algorithm', { infer: true })],
+      callbackUrl: 'auth/magiclogin/callback',
+      sendMagicLink: async (destination: string, href: string) => {
+        this.logger.log(
+          `Sending magic link to ${destination} with href ${href}`,
+        );
+
+        return this.mailService.sendMail({
+          template: EmailTemplate.MAGIC_LOGIN_TEMPLATE,
+          replacements: {
+            link: `${this.configService.get('app.url', { infer: true })}/v1/${href}`,
+            expiry: this.configService.get('jwt.magicLinkExpiry', {
+              infer: true,
+            }),
+            to: destination,
+            subject: EmailSubject.MAGIC_LOGIN,
+            from: this.configService.get('mail.senderEmail', { infer: true }),
+          },
+        });
+      },
+      verify: (
+        payload: MagicLoginPayload,
+        callback: (callback_: undefined, user: Promise<Loaded<User>>) => void,
+      ) => {
+        // Get or create a user with the provided email from the database
+        callback(undefined, this.validate(payload.destination));
+      },
+    });
+  }
+
+  async validate(email: string) {
+    // Accept the JWT and attempt to validate it using the user service
+    return this.authService.findUser({ email });
+  }
+}

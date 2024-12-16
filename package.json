@@ -46,6 +46,7 @@
     "nodemailer": "^6.9.16",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
+    "passport-magic-login": "^1.2.2",
     "preview-email": "^3.1.0",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1"

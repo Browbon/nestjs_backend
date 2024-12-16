@@ -22,5 +22,5 @@ export const jwt = registerAs('jwt', () => ({
   algorithm: process.env.JWT_ALGORITHM ?? 'HS256',
   accessExpiry: process.env.JWT_ACCESS_EXPIRY,
   refreshExpiry: process.env.JWT_REFRESH_EXPIRY,
-  macgicLinkExpiry: process.env.JWT_MAGIC_LINK_EXPIRY,
+  magicLinkExpiry: process.env.JWT_MAGIC_LINK_EXPIRY,
 }));

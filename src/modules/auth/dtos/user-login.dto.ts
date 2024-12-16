@@ -9,3 +9,8 @@ export class UserLoginDto {
   @IsNotEmpty({ message: validateI18nMessage('validation.isNotEmpty') })
   password?: string;
 }
+
+export class MagicLinkLogin {
+  @IsEmailField()
+  destinationEmail: string;
+}
