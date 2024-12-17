@@ -5,11 +5,11 @@ import {
   OneToMany,
   Property,
 } from '@mikro-orm/postgresql';
-import { BaseEnity } from 'common/databases';
+import { BaseEntity } from 'common/databases';
 import { Message, User } from './index';
 
 @Entity()
-export class Conversation extends BaseEnity {
+export class Conversation extends BaseEntity {
   @Property({ index: true })
   chatName!: string;
 

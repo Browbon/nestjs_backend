@@ -4,7 +4,12 @@ import { UserModule } from '../user/user.module';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { RefreshTokenRepository, TokenService } from 'modules/token';
-import { GoogleStrategy, JwtStrategy } from './strategies';
+import {
+  FacebookStrategy,
+  GoogleStrategy,
+  JwtStrategy,
+  MagicLoginStrategy,
+} from './strategies';
 
 @Module({
   imports: [PassportModule, UserModule],
@@ -15,6 +20,9 @@ import { GoogleStrategy, JwtStrategy } from './strategies';
     JwtStrategy,
     RefreshTokenRepository,
     GoogleStrategy,
+    FacebookStrategy,
+    MagicLoginStrategy,
   ],
+  exports: [AuthService, JwtStrategy, TokenService, RefreshTokenRepository],
 })
 export class AuthModule {}

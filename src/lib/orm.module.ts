@@ -1,9 +1,9 @@
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Configs } from './config/config.interface';
 import { baseOptions } from 'common/databases';
 import * as Entities from '../entities';
+import { Configs } from 'common/@types/typings/global';
 
 @Global()
 @Module({

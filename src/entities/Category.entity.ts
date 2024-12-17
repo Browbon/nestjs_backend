@@ -4,11 +4,11 @@ import {
   ManyToMany,
   Property,
 } from '@mikro-orm/postgresql';
-import { BaseEnity } from 'common/databases';
+import { BaseEntity } from 'common/databases';
 import { Post } from './index';
 
 @Entity()
-export class Category extends BaseEnity {
+export class Category extends BaseEntity {
   @Property({ index: true })
   name!: string;
 

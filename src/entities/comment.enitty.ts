@@ -1,9 +1,9 @@
 import { Post, User } from './index';
 import { Entity, ManyToOne, Property, Ref, Rel } from '@mikro-orm/postgresql';
-import { BaseEnity } from 'common/databases';
+import { BaseEntity } from 'common/databases';
 
 @Entity()
-export class Comment extends BaseEnity {
+export class Comment extends BaseEntity {
   @Property()
   body!: string;
 

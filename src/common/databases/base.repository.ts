@@ -1,4 +1,4 @@
 import { EntityRepository } from '@mikro-orm/postgresql';
-import { BaseEnity } from './base.enitty';
+import { BaseEntity } from './base.enitty';
 
-export class BaseRepository<T extends BaseEnity> extends EntityRepository<T> {}
+export class BaseRepository<T extends BaseEntity> extends EntityRepository<T> {}

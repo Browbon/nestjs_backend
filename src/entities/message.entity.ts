@@ -6,11 +6,11 @@ import {
   Ref,
   Rel,
 } from '@mikro-orm/postgresql';
-import { BaseEnity } from 'common/databases';
+import { BaseEntity } from 'common/databases';
 import { Conversation, User } from './index';
 
 @Entity()
-export class Message extends BaseEnity {
+export class Message extends BaseEntity {
   @Property()
   body!: string;
 

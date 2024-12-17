@@ -8,12 +8,12 @@ import {
   ManyToMany,
   Property,
 } from '@mikro-orm/postgresql';
-import { BaseEnity } from 'common/databases';
+import { BaseEntity } from 'common/databases';
 import { Post } from './index';
 import { HelperService } from 'common/helpers';
 
 @Entity()
-export class Tag extends BaseEnity {
+export class Tag extends BaseEntity {
   @Property({ length: 50, index: true, unique: true })
   title!: string;
 

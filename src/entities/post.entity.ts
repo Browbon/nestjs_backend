@@ -14,13 +14,13 @@ import {
   Ref,
   Rel,
 } from '@mikro-orm/postgresql';
-import { BaseEnity } from 'common/databases';
+import { BaseEntity } from 'common/databases';
 import { Category, Comment, Tag, User } from './index';
 import { PostStateEnum } from 'common/@types/enums';
 import { HelperService } from 'common/helpers';
 
 @Entity()
-export class Post extends BaseEnity {
+export class Post extends BaseEntity {
   @Property({ index: true })
   slug?: string;
 
