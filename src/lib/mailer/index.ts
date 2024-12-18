@@ -1,4 +1,31 @@
-export * from './mailer.module';
-export * from './mailer.service';
-export * from './mail.module-definition';
-export * from './mailer.option';
+import { Global, Module } from '@nestjs/common';
+import { MailModule } from './mailer.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Configs } from 'common/@types/typings/global';
+import { EmailServer, TemplateEngine } from 'common/@types/enums';
+
+@Global()
+@Module({
+  imports: [
+    MailModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService<Configs, true>) => ({
+        credentials: {
+          type: configService.get('mail.type', {
+            infer: true,
+          }) as EmailServer.SMTP,
+          host: configService.get('mail.host', { infer: true }),
+          port: configService.get('mail.port', { infer: true }),
+          username: configService.get('mail.username', { infer: true }),
+          password: configService.get('mail.password', { infer: true }),
+        },
+        previewEmail: configService.get('mail.previewEmail', { infer: true }),
+        templateDir: configService.get('mail.templateDir', { infer: true }),
+        templateEngine: TemplateEngine.ETA,
+      }),
+    }),
+  ],
+  exports: [MailModule],
+})
+export class NestMailModule {}
