@@ -33,11 +33,11 @@ import { HelperService } from 'common/helpers';
 import { TokenService } from 'modules/token';
 import { PostgreSqlDriver } from '@mikro-orm/postgresql';
 import { init } from '@paralleldrive/cuid2';
-import { MailerService } from 'lib/mailer';
 import { EmailSubject, EmailTemplate } from 'common/@types/enums';
 import { Configs, NestifyResponse } from 'common/@types/typings/global';
 import { OauthResponse } from 'common/@types/interfaces';
 import { isAfter } from 'date-fns';
+import { MailerService } from 'lib/mailer/mailer.service';
 
 @Injectable()
 export class AuthService {

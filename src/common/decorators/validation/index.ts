@@ -4,3 +4,6 @@ export * from './min-max-length.decorator';
 export * from './transform.decorator';
 export * from './is-password.validatior';
 export * from './is-equal-to.validator';
+export * from './is-date.validator';
+export * from './is-number-field.validator';
+export * from './is-enum-field.validator';

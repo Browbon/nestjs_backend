@@ -30,6 +30,16 @@ export const EmailSubject: Record<TEmailSubject, string> = {
   NEWSLETTER: 'Newsletter',
 };
 
+export const RoutingKey = {
+  SEND_MAIL: 'send-mail',
+  SEND_NEWSLETTER: 'send-newsletter',
+};
+
+export const Queues = {
+  MAIL: 'mail',
+  HTTP: 'http',
+};
+
 // database enum
 export enum CursorType {
   DATE = 'DATE',

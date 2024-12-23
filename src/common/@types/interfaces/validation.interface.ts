@@ -23,3 +23,16 @@ export interface StringFieldOptions extends BaseValidator, BaseArrayValidator {
   maxLength?: number;
   sanitize?: boolean;
 }
+
+export interface DateFieldOptions extends BaseValidator, BaseArrayValidator {
+  greaterThan?: boolean;
+  lessThan?: boolean;
+  date?: Date; // Date object to compare against
+}
+
+export interface NumberFieldOptions extends BaseValidator, BaseArrayValidator {
+  min?: number;
+  max?: number;
+  int?: boolean;
+  positive?: boolean;
+}

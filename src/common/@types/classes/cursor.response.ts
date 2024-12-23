@@ -1,0 +1,40 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { PaginationAbstractResponse } from '../interfaces';
+import { IsArray } from 'class-validator';
+
+export class CursorMeta {
+  /**
+   * @example AdVxY2F0ZWdvcnlfaWQ9MjMx
+   */
+  @ApiProperty()
+  nextCursor!: string;
+
+  /**
+   * @example false
+   */
+  @ApiProperty()
+  hasNextPage!: boolean;
+
+  /**
+   * @example true
+   */
+  @ApiProperty()
+  hasPreviousPage!: boolean;
+
+  /**
+   * @example "lorem ipsum"
+   */
+  @ApiProperty()
+  search?: string;
+}
+
+export class CursorPaginationResponse<T>
+  implements PaginationAbstractResponse<T, CursorMeta>
+{
+  @ApiProperty({ isArray: true })
+  @IsArray()
+  readonly data!: T[];
+
+  @ApiProperty({ type: () => CursorMeta })
+  readonly meta!: CursorMeta;
+}

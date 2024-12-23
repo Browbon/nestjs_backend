@@ -154,4 +154,24 @@ export const HelperService = {
 
     return password.join('');
   },
+
+  enumToString<T extends Record<string, string>>(_enum: T): string {
+    return Object.keys(_enum)
+      .map((key) => _enum[key])
+      .join(',');
+  },
+
+  /**
+   * Take string as input, trim it, replace newline character with space, remove consecutive spaces
+   * and covert the string to lower case
+   * @param search - String
+   * @returns formatted string
+   */
+  formatSearch(search: string) {
+    return `%${search
+      .trim()
+      .replaceAll('\n', ' ')
+      .replaceAll(/\s{2,}/g, ' ')
+      .toLowerCase()}%`;
+  },
 };
