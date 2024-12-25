@@ -1,5 +1,7 @@
 import { TEmailSubject } from '../interfaces';
 
+export const MB_TO_BYTE = 1024 * 1024;
+
 export enum PostStateEnum {
   DRAFT = 'DRAFT',
   PUBLISHED = 'PUBLISHED',
@@ -38,6 +40,27 @@ export const RoutingKey = {
 export const Queues = {
   MAIL: 'mail',
   HTTP: 'http',
+};
+
+export const FileSize = {
+  IMAGE: 5 * MB_TO_BYTE, // 5MB
+  DOC: 10 * MB_TO_BYTE, // 10MB
+};
+
+export const FileType: Record<keyof typeof FileSize, string[]> = {
+  IMAGE: ['jpg', 'jpeg', 'png', 'svg', 'webp', 'gif', 'svg'],
+  DOC: [
+    'pdf',
+    'doc',
+    'txt',
+    'key',
+    'csv',
+    'docx',
+    'xls',
+    'xlsx',
+    'ppt',
+    'pptx',
+  ],
 };
 
 // database enum

@@ -19,6 +19,7 @@ import {
   QBCursorPaginationOptions,
 } from 'common/@types/interfaces';
 import { CursorPaginationResponse } from 'common/@types/classes';
+import { from, map, Observable } from 'rxjs';
 
 export class BaseRepository<T extends BaseEntity> extends EntityRepository<T> {
   private readonly encoding: BufferEncoding = 'base64';
@@ -204,5 +205,17 @@ export class BaseRepository<T extends BaseEntity> extends EntityRepository<T> {
       first,
       search,
     });
+  }
+
+  /**
+   * Soft removes the entity and flushes the changes to the database
+   * @param entity - T The entity need to be removed
+   * @returns Observable of removed entity
+   */
+  softRemoveAndFlush(entity: T): Observable<T> {
+    entity.deletedAt = new Date();
+    entity.isDeleted = true;
+
+    return from(this.em.persistAndFlush(entity)).pipe(map(() => entity));
   }
 }

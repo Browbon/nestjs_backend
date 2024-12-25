@@ -21,7 +21,7 @@ export abstract class BaseEntity {
 
   // The date that entity was soft-deleted. Nullable because it's not set until the entity is soft-deleted
   @Property()
-  deleteAt?: Date | null;
+  deletedAt?: Date | null;
 
   // The day when entity is created
   @Property()

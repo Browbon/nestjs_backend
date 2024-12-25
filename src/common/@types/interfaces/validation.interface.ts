@@ -36,3 +36,9 @@ export interface NumberFieldOptions extends BaseValidator, BaseArrayValidator {
   int?: boolean;
   positive?: boolean;
 }
+
+export interface FileValidator {
+  fileType?: string[];
+  fileSize?: number;
+  required?: boolean;
+}

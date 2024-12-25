@@ -7,3 +7,6 @@ export * from './is-equal-to.validator';
 export * from './is-date.validator';
 export * from './is-number-field.validator';
 export * from './is-enum-field.validator';
+export * from './is-username.validator';
+export * from './is-unique.validator';
+export * from './file-format.validator';
