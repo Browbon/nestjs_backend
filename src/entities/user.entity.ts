@@ -83,6 +83,9 @@ export class User extends BaseEntity {
   })
   conversations = new Collection<Conversation>(this);
 
+  @ManyToMany({ hidden: true })
+  favorites = new Collection<Post>(this);
+
   @Embedded(() => Social, { object: true, nullable: true })
   social?: Social;
 

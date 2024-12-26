@@ -7,6 +7,8 @@ import { NestHttpModule, NestJwtModule } from 'lib';
 import { NestMailModule } from 'lib/mailer';
 import { NestCaslModule } from 'lib/casl';
 import { UserModule } from 'modules/user/user.module';
+import { AuthModule } from 'modules/auth/auth.module';
+import { ProfileModule } from 'modules/profile/profile.module';
 
 @Module({
   imports: [
@@ -18,7 +20,9 @@ import { UserModule } from 'modules/user/user.module';
     NestHttpModule,
     NestJwtModule,
     OrmModule,
+    AuthModule,
     UserModule,
+    ProfileModule,
   ],
   providers: [],
 })
