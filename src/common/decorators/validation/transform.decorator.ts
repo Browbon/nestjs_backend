@@ -41,3 +41,26 @@ export function Trim() {
     return value.trim().replaceAll(/\s{2,}/g, ' ');
   });
 }
+
+/**
+ * convert a stirng into boolean
+ * @returns decorator
+ */
+export function ToBoolean() {
+  return Transform(
+    (parameters) => {
+      switch (parameters.value) {
+        case 'true': {
+          return true;
+        }
+        case 'false': {
+          return false;
+        }
+        default: {
+          return parameters.value as boolean;
+        }
+      }
+    },
+    { toClassOnly: true },
+  );
+}

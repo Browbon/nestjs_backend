@@ -11,6 +11,7 @@ interface BaseArrayValidator {
 
 export type EnumFieldOptions = BaseValidator & BaseArrayValidator;
 export type EmailFieldOptions = EnumFieldOptions;
+export type UUIDFieldOptions = EnumFieldOptions;
 export type MinMaxLengthOptions = Pick<
   StringFieldOptions,
   'each' | 'minLength' | 'maxLength'

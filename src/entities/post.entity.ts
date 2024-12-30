@@ -28,7 +28,7 @@ export class Post extends BaseEntity {
   title!: string;
 
   @Property({ type: 'text' })
-  desciption!: string;
+  description!: string;
 
   @Property({ type: 'text' })
   content!: string;
@@ -58,7 +58,7 @@ export class Post extends BaseEntity {
   categories = new Collection<Category>(this);
 
   @Enum({ items: () => PostStateEnum })
-  stat: PostStateEnum & Opt = PostStateEnum.DRAFT;
+  state: PostStateEnum & Opt = PostStateEnum.DRAFT;
 
   constructor(partial?: Partial<Post>) {
     super();
