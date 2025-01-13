@@ -7,6 +7,7 @@ import {
   jwt,
   mail,
   rabbitmq,
+  redis,
 } from './configs';
 
 export interface ConfigInterface {
@@ -17,4 +18,5 @@ export interface ConfigInterface {
   googleAuth: ConfigType<typeof googleOauth>;
   facebookOauth: ConfigType<typeof facebookOauth>;
   rabbitmq: ConfigType<typeof rabbitmq>;
+  redis: ConfigType<typeof redis>;
 }

@@ -9,6 +9,8 @@ import { NestCaslModule } from 'lib/casl';
 import { UserModule } from 'modules/user/user.module';
 import { AuthModule } from 'modules/auth/auth.module';
 import { ProfileModule } from 'modules/profile/profile.module';
+import { PostModule } from 'modules/post/post.module';
+import { NestCacheModule } from 'lib/cache';
 
 @Module({
   imports: [
@@ -17,12 +19,14 @@ import { ProfileModule } from 'modules/profile/profile.module';
     NestI18nModule,
     NestCaslModule,
     NestRabbitModule,
+    NestCacheModule,
     NestHttpModule,
     NestJwtModule,
     OrmModule,
     AuthModule,
     UserModule,
     ProfileModule,
+    PostModule,
   ],
   providers: [],
 })

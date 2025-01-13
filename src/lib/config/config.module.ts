@@ -13,6 +13,7 @@ import {
   jwt,
   jwtConfigValidationSchema,
   rabbitmqConfigValidationSchema,
+  redisConfigValidationSchema,
 } from './configs';
 
 @Module({
@@ -30,6 +31,7 @@ import {
         ...googleOauthConfigValidationSchema,
         ...facebookOauthConfigValidationSchema,
         ...rabbitmqConfigValidationSchema,
+        ...redisConfigValidationSchema,
       }),
       validationOptions: {
         abortEarly: true,
